@@ -1,5 +1,11 @@
 @if (habito(); as habitoActual) {
   <main class="panel activo" aria-label="Panel de celebracion">
+    <div class="confetti-overlay" aria-hidden="true">
+      @for (piece of confettiPieces; track piece) {
+        <span class="confetti-piece"></span>
+      }
+    </div>
+
     <a class="btn-volver" [routerLink]="rutaVolver()">
       <span class="flecha-back" aria-hidden="true">⟵</span>
       <span>VOLVER</span>
@@ -7,8 +13,10 @@
 
     <h1 class="titulo-tarea">¡TAREA COMPLETADA!</h1>
 
-    <div class="personaje-circulo celebracion">
-      <img [ngSrc]="avatarCelebracion()" alt="Avatar celebrando" width="130" height="130" />
+    <div class="celebracion-avatar-wrap">
+      <div class="personaje-circulo celebracion">
+        <img [ngSrc]="avatarCelebracion()" alt="Avatar celebrando" width="130" height="130" />
+      </div>
     </div>
 
     <h2 class="nombre-tarea">{{ habitoActual.nombre }}</h2>

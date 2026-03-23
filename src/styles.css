@@ -329,6 +329,22 @@ h2 {
   align-items: center;
   justify-content: center;
   text-decoration: none;
+  transform: scale(1);
+  transition: transform 0.16s ease, box-shadow 0.16s ease, filter 0.16s ease;
+}
+
+.btn-accion:hover {
+  transform: scale(1.08);
+  box-shadow: 0 10px 22px rgba(0, 0, 0, 0.18);
+}
+
+.btn-accion:active {
+  transform: scale(1.14);
+  filter: brightness(0.96);
+}
+
+.btn-accion:focus-visible {
+  transform: scale(1.08);
 }
 
 .btn-cancelar {

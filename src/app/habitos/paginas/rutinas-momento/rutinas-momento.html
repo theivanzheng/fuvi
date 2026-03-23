@@ -1,6 +1,6 @@
-<main class="panel activo" aria-label="Panel de rutinas por momento del dia">
+<main class="panel activo" aria-label="Panel de rutinas por momento del día">
   <div class="topbar-rutinas">
-    <a class="btn-volver btn-back-momento" [routerLink]="['/']" aria-label="Volver a seleccion de momento">
+    <a class="btn-volver btn-back-momento" [routerLink]="['/']" aria-label="Volver a selección de momento">
       <span class="flecha-back" aria-hidden="true">⟵</span>
       <span>VOLVER</span>
     </a>
@@ -20,7 +20,7 @@
   <app-progreso-bar [completados]="totalCompletadosMomento()" [total]="totalHabitosMomento()" />
 
   <section class="habitos-section" aria-label="Listado de rutinas">
-    <h2>HABITOS</h2>
+    <h2>HÁBITOS</h2>
 
     @if (totalHabitosMomento() === 0) {
       <p class="sin-rutinas">NO HAY RUTINAS PARA ESTE MOMENTO</p>

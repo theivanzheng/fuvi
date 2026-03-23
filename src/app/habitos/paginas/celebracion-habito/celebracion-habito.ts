@@ -16,6 +16,7 @@ export class CelebracionHabito {
   private readonly router = inject(Router);
   private readonly habitosService = inject(HabitosService);
 
+  readonly confettiPieces = Array.from({ length: 24 }, (_, index) => index);
   private readonly habitoId = Number(this.route.snapshot.paramMap.get('id'));
   habito = computed(() => this.habitosService.getHabitoPorId(this.habitoId));
   rutaVolver = computed(() => ['/rutinas', this.habitosService.getMomentoHabito(this.habitoId)] as const);

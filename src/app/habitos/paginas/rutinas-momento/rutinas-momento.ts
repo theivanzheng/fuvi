@@ -48,17 +48,17 @@ export class RutinasMomento {
   tituloMomento = computed(() => {
     const momento = this.momentoSeleccionado();
     if (momento === 'mediodia') {
-      return 'RUTINAS DE MEDIODIA';
+      return 'RUTINAS DE MEDIODÍA';
     }
 
     if (momento === 'noche') {
       return 'RUTINAS DE NOCHE';
     }
 
-    return 'RUTINAS DE MANANA';
+    return 'RUTINAS DE MAÑANA';
   });
 
-  subtituloDia = computed(() => (this.esFinde() ? 'HOY ES FIN DE SEMANA' : 'HOY ES DIA DE SEMANA'));
+  subtituloDia = computed(() => (this.esFinde() ? 'HOY ES FIN DE SEMANA' : 'HOY ES DÍA DE SEMANA'));
 
   reiniciarRutinas(): void {
     this.habitosService.reiniciarHabitos();
