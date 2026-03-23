@@ -1,0 +1,28 @@
+<main class="panel activo" aria-label="Panel de configuracion de avatar">
+  <a class="btn-volver" [routerLink]="['/']">← VOLVER</a>
+  <h1 class="titulo-tarea">ELIGE TU COMPAÑERO</h1>
+
+  <section class="avatar-grid">
+    <button
+      class="avatar-option"
+      [class.selected]="avatarSeleccionado() === 'female'"
+      (click)="seleccionarAvatar('female')"
+    >
+      <div class="personaje-circulo">
+        <img ngSrc="/assets/images/character-female.png" alt="Fuvi chica" width="140" height="140" />
+      </div>
+      <p>Fuvi (Chica)</p>
+    </button>
+
+    <button
+      class="avatar-option"
+      [class.selected]="avatarSeleccionado() === 'male'"
+      (click)="seleccionarAvatar('male')"
+    >
+      <div class="personaje-circulo">
+        <img ngSrc="/assets/images/character-male.png" alt="Fuvi chico" width="140" height="140" />
+      </div>
+      <p>Fuvi (Chico)</p>
+    </button>
+  </section>
+</main>

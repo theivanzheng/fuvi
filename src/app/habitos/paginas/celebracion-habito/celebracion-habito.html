@@ -1,0 +1,23 @@
+@if (habito(); as habitoActual) {
+  <main class="panel activo" aria-label="Panel de celebracion">
+    <a class="btn-volver" [routerLink]="['/']">← VOLVER</a>
+
+    <h1 class="titulo-tarea">¡TAREA COMPLETADA!</h1>
+
+    <div class="personaje-circulo celebracion">
+      <img [ngSrc]="avatarCelebracion()" alt="Avatar celebrando" width="130" height="130" />
+    </div>
+
+    <h2 class="nombre-tarea">{{ habitoActual.nombre }}</h2>
+
+    <app-progreso-bar
+      [completados]="habitoActual.pasos.length"
+      [total]="habitoActual.pasos.length"
+    />
+
+    <div class="botones-accion">
+      <a class="btn-accion btn-cancelar" [routerLink]="['/']">✕</a>
+      <button class="btn-accion btn-completar" (click)="finalizarTarea()">✓</button>
+    </div>
+  </main>
+}

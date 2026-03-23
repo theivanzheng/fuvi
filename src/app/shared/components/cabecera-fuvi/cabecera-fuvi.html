@@ -1,0 +1,16 @@
+<div class="header">
+  <h1>{{ titulo() }}</h1>
+
+  <div class="personaje-wrapper">
+    <div class="personaje-container">
+      <img [ngSrc]="avatar()" alt="Personaje Fuvi" width="176" height="176" />
+    </div>
+
+    @if (mostrarBotonConfiguracion()) {
+      <a class="btn-config-floating" [routerLink]="['/configuracion/avatar']" aria-label="Cambiar personaje">
+        <span class="config-icon">⇄</span>
+        <span class="config-text">Cambia tu personaje</span>
+      </a>
+    }
+  </div>
+</div>
