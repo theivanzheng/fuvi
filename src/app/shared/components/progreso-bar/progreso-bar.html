@@ -1,0 +1,13 @@
+<div class="progreso-container">
+  <div class="barra-progreso">
+    <div
+      class="barra-progreso-fill"
+      role="progressbar"
+      [attr.aria-valuenow]="porcentaje()"
+      aria-valuemin="0"
+      aria-valuemax="100"
+      [style.width.%]="porcentaje()"
+    ></div>
+  </div>
+  <p>{{ completados() }} de {{ total() }} tareas completadas</p>
+</div>

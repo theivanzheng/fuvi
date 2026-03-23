@@ -1,0 +1,18 @@
+<a
+  class="habito-btn"
+  [routerLink]="routerLink()"
+  [class.completado]="habito().completado"
+  [style.background]="habito().color"
+  [attr.aria-label]="habito().nombre"
+>
+  <div class="habito-icon-container">
+    <img
+      [ngSrc]="habito().imagenPortada"
+      [alt]="habito().nombre"
+      width="52"
+      height="52"
+      class="habito-img"
+    />
+  </div>
+  <span class="habito-texto" [class.tachado]="habito().completado">{{ habito().nombre }}</span>
+</a>

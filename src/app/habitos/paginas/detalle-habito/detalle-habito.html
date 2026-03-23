@@ -1,0 +1,32 @@
+@if (habito(); as habitoActual) {
+  <main class="panel activo" aria-label="Panel de tarea">
+    <a class="btn-volver" [routerLink]="['/']">← Volver</a>
+
+    <h1 class="titulo-tarea">Completa la tarea</h1>
+
+    <div class="personaje-circulo">
+      <img [ngSrc]="avatarPrincipal()" alt="Avatar principal" width="130" height="130" />
+    </div>
+
+    <h2 class="nombre-tarea">{{ habitoActual.nombre }}</h2>
+
+    <app-progreso-bar [completados]="pasoActual() + 1" [total]="totalPasos()" />
+
+    @if (pasoEnCurso(); as paso) {
+      <article class="paso-card">
+        <div class="paso-numero">{{ pasoActual() + 1 }}.</div>
+
+        <div class="paso-pictograma">
+          <img [ngSrc]="paso.imagen" [alt]="paso.texto" width="180" height="180" />
+        </div>
+
+        <p class="paso-texto">{{ paso.texto }}</p>
+      </article>
+    }
+
+    <div class="botones-accion">
+      <button class="btn-accion btn-cancelar" (click)="cancelar()">✕</button>
+      <button class="btn-accion btn-completar" (click)="completarPaso()">✓</button>
+    </div>
+  </main>
+}

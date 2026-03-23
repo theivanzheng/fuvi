@@ -1,0 +1,23 @@
+<main class="panel activo" aria-label="Panel principal de habitos">
+  <app-cabecera-fuvi
+    titulo="Hola, soy Fuvi"
+    [avatar]="avatarPrincipal()"
+    [mostrarBotonConfiguracion]="true"
+  />
+
+  <app-progreso-bar [completados]="totalCompletados()" [total]="totalHabitos()" />
+
+  <section class="habitos-section" aria-label="Listado de habitos">
+    <h2>Habitos</h2>
+
+    <div class="habitos-lista">
+      @for (habito of habitos(); track habito.id) {
+        <app-tarjeta-habito [habito]="habito" [routerLink]="['/habitos', habito.id]" />
+      }
+    </div>
+  </section>
+
+  @if (todoCompletado()) {
+    <button class="btn-reiniciar" (click)="reiniciarRutinas()">Reiniciar tareas</button>
+  }
+</main>
