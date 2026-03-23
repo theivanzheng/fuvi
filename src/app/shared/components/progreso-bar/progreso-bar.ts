@@ -18,4 +18,8 @@ export class ProgresoBar {
 
     return Math.round((this.completados() / total) * 100);
   });
+
+  segmentos = computed(() => {
+    return Array.from({ length: this.total() }, (_, i) => i);
+  });
 }

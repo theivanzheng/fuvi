@@ -1,5 +1,7 @@
 <div class="header">
-  <h1>{{ titulo() }}</h1>
+  @if (mostrarTitulo()) {
+    <h1>{{ titulo() }}</h1>
+  }
 
   <div class="personaje-wrapper">
     <div class="personaje-container">

@@ -18,6 +18,7 @@ export class CelebracionHabito {
 
   private readonly habitoId = Number(this.route.snapshot.paramMap.get('id'));
   habito = computed(() => this.habitosService.getHabitoPorId(this.habitoId));
+  rutaVolver = computed(() => ['/rutinas', this.habitosService.getMomentoHabito(this.habitoId)] as const);
   avatarCelebracion = this.habitosService.avatarCelebracion;
 
   constructor() {
@@ -27,7 +28,9 @@ export class CelebracionHabito {
   }
 
   finalizarTarea(): void {
+    // TODO(AFIM): reproducir un sonido de refuerzo positivo al completar la tarea.
+    // TODO(AFIM): retocar el final del premio (pantalla/flujo de cierre) antes de la entrega final.
     this.habitosService.completarHabito(this.habitoId);
-    this.router.navigateByUrl('/');
+    this.router.navigate(this.rutaVolver());
   }
 }

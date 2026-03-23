@@ -1,8 +1,11 @@
 @if (habito(); as habitoActual) {
   <main class="panel activo" aria-label="Panel de celebracion">
-    <a class="btn-volver" [routerLink]="['/']">← Volver</a>
+    <a class="btn-volver" [routerLink]="rutaVolver()">
+      <span class="flecha-back" aria-hidden="true">⟵</span>
+      <span>VOLVER</span>
+    </a>
 
-    <h1 class="titulo-tarea">Tarea completada</h1>
+    <h1 class="titulo-tarea">¡TAREA COMPLETADA!</h1>
 
     <div class="personaje-circulo celebracion">
       <img [ngSrc]="avatarCelebracion()" alt="Avatar celebrando" width="130" height="130" />
@@ -16,7 +19,7 @@
     />
 
     <div class="botones-accion">
-      <a class="btn-accion btn-cancelar" [routerLink]="['/']">✕</a>
+      <a class="btn-accion btn-cancelar" [routerLink]="rutaVolver()">✕</a>
       <button class="btn-accion btn-completar" (click)="finalizarTarea()">✓</button>
     </div>
   </main>

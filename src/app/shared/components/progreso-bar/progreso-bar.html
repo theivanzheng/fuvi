@@ -1,13 +1,8 @@
 <div class="progreso-container">
-  <div class="barra-progreso">
-    <div
-      class="barra-progreso-fill"
-      role="progressbar"
-      [attr.aria-valuenow]="porcentaje()"
-      aria-valuemin="0"
-      aria-valuemax="100"
-      [style.width.%]="porcentaje()"
-    ></div>
+  <div class="barra-progreso" role="progressbar" [attr.aria-valuenow]="porcentaje()" aria-valuemin="0" aria-valuemax="100">
+    @for (i of segmentos(); track i) {
+      <div class="progreso-segmento" [class.completado]="i < completados()"></div>
+    }
   </div>
-  <p>{{ completados() }} de {{ total() }} tareas completadas</p>
+  <p class="progreso-texto">{{ completados() }} DE {{ total() }} TAREAS COMPLETADAS</p>
 </div>

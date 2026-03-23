@@ -1,0 +1,64 @@
+:host {
+  display: block;
+}
+
+.topbar-rutinas {
+  width: 100%;
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 4px;
+}
+
+.titulo-rutinas {
+  text-align: center;
+  font-size: 3rem;
+  margin: 0;
+}
+
+.topbar-espacio {
+  width: 98px;
+  height: 1px;
+}
+
+.btn-back-momento {
+  justify-self: start;
+}
+
+.subtitulo-dia {
+  text-align: center;
+  font-size: 1.1rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.sin-rutinas {
+  text-align: center;
+  border: var(--border-width) solid var(--border-color);
+  border-radius: 12px;
+  padding: 14px;
+  font-weight: 700;
+  background: #fff;
+}
+
+@media (max-width: 768px) {
+  .topbar-rutinas {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+
+  .topbar-espacio {
+    display: none;
+  }
+
+  .titulo-rutinas {
+    font-size: 2rem;
+    order: 2;
+  }
+
+  .btn-back-momento {
+    order: 1;
+  }
+}

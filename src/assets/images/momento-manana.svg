@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="256" height="256" viewBox="0 0 256 256" aria-label="Manana">
+  <rect width="256" height="256" fill="#ffffff"/>
+  <circle cx="128" cy="128" r="52" fill="#ffdd66" stroke="#000000" stroke-width="6"/>
+  <g stroke="#000000" stroke-width="6" stroke-linecap="round">
+    <line x1="128" y1="24" x2="128" y2="56"/>
+    <line x1="128" y1="200" x2="128" y2="232"/>
+    <line x1="24" y1="128" x2="56" y2="128"/>
+    <line x1="200" y1="128" x2="232" y2="128"/>
+    <line x1="53" y1="53" x2="76" y2="76"/>
+    <line x1="180" y1="180" x2="203" y2="203"/>
+    <line x1="203" y1="53" x2="180" y2="76"/>
+    <line x1="76" y1="180" x2="53" y2="203"/>
+  </g>
+  <rect x="30" y="188" width="196" height="38" rx="12" fill="#bde0fe" stroke="#000000" stroke-width="6"/>
+</svg>
