@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="256" height="256" viewBox="0 0 256 256" aria-label="Noche">
+  <rect width="256" height="256" fill="#ffffff"/>
+  <circle cx="148" cy="96" r="54" fill="#f8f9fa" stroke="#000000" stroke-width="6"/>
+  <circle cx="170" cy="86" r="48" fill="#ffffff"/>
+  <circle cx="70" cy="72" r="8" fill="#000000"/>
+  <circle cx="98" cy="46" r="6" fill="#000000"/>
+  <circle cx="104" cy="88" r="5" fill="#000000"/>
+  <rect x="26" y="178" width="204" height="50" rx="12" fill="#cdb4db" stroke="#000000" stroke-width="6"/>
+  <path d="M64 198 L96 176 L128 198 L160 176 L192 198" fill="none" stroke="#000000" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>

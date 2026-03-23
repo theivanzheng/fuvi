@@ -1,23 +1,35 @@
-<main class="panel activo" aria-label="Panel principal de habitos">
+<main class="panel activo" aria-label="Panel de seleccion de momento del dia">
   <app-cabecera-fuvi
-    titulo="HOLA, SOY FUVI"
+    titulo="ELIGE EL MOMENTO DEL DIA"
     [avatar]="avatarPrincipal()"
     [mostrarBotonConfiguracion]="true"
   />
 
-  <app-progreso-bar [completados]="totalCompletados()" [total]="totalHabitos()" />
+  <section class="momentos-section" aria-label="Seleccion de momento del dia">
+    <a class="momento-card" [routerLink]="['/rutinas', 'manana']" aria-label="Rutinas de manana">
+      <div class="momento-pictograma">
+        <img ngSrc="/assets/images/momento-manana.svg" alt="Pictograma de manana" width="180" height="180" />
+      </div>
+      <h2>MANANA</h2>
+    </a>
 
-  <section class="habitos-section" aria-label="Listado de habitos">
-    <h2>HÁBITOS</h2>
+    <a class="momento-card" [routerLink]="['/rutinas', 'mediodia']" aria-label="Rutinas de mediodia">
+      <div class="momento-pictograma">
+        <img
+          ngSrc="/assets/images/momento-mediodia.svg"
+          alt="Pictograma de mediodia"
+          width="180"
+          height="180"
+        />
+      </div>
+      <h2>MEDIODIA</h2>
+    </a>
 
-    <div class="habitos-lista">
-      @for (habito of habitos(); track habito.id) {
-        <app-tarjeta-habito [habito]="habito" [routerLink]="['/habitos', habito.id]" />
-      }
-    </div>
+    <a class="momento-card" [routerLink]="['/rutinas', 'noche']" aria-label="Rutinas de noche">
+      <div class="momento-pictograma">
+        <img ngSrc="/assets/images/momento-noche.svg" alt="Pictograma de noche" width="180" height="180" />
+      </div>
+      <h2>NOCHE</h2>
+    </a>
   </section>
-
-  @if (todoCompletado()) {
-    <button class="btn-reiniciar" (click)="reiniciarRutinas()">REINICIAR TAREAS</button>
-  }
 </main>

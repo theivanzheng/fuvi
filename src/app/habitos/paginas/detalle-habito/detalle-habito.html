@@ -1,6 +1,9 @@
 @if (habito(); as habitoActual) {
   <main class="panel activo" aria-label="Panel de tarea">
-    <a class="btn-volver" [routerLink]="['/']">← VOLVER</a>
+    <a class="btn-volver" [routerLink]="rutaVolver()">
+      <span class="flecha-back" aria-hidden="true">⟵</span>
+      <span>VOLVER</span>
+    </a>
 
     <h1 class="titulo-tarea">COMPLETA LA TAREA</h1>
 

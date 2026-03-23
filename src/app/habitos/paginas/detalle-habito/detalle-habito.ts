@@ -20,6 +20,7 @@ export class DetalleHabito {
   pasoActual = signal(0);
 
   habito = computed(() => this.habitosService.getHabitoPorId(this.habitoId));
+  rutaVolver = computed(() => ['/rutinas', this.habitosService.getMomentoHabito(this.habitoId)] as const);
   avatarPrincipal = this.habitosService.avatarPrincipal;
   totalPasos = computed(() => this.habito()?.pasos.length ?? 0);
   pasoEnCurso = computed(() => {
@@ -38,7 +39,7 @@ export class DetalleHabito {
   }
 
   cancelar(): void {
-    this.router.navigateByUrl('/');
+    this.router.navigate(this.rutaVolver());
   }
 
   completarPaso(): void {
