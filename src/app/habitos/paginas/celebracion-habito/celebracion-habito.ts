@@ -1,6 +1,7 @@
-import { NgOptimizedImage } from '@angular/common';
-import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
+import { NgOptimizedImage, isPlatformBrowser } from '@angular/common';
+import { ChangeDetectionStrategy, Component, computed, inject, PLATFORM_ID } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { AudioFeedbackService } from '../../../core/services/audio-feedback.service';
 import { HabitosService } from '../../../core/services/habitos.service';
 import { ProgresoBar } from '../../../shared/components/progreso-bar/progreso-bar';
 
@@ -14,6 +15,8 @@ import { ProgresoBar } from '../../../shared/components/progreso-bar/progreso-ba
 export class CelebracionHabito {
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
+  private readonly platformId = inject(PLATFORM_ID);
+  private readonly audioFeedback = inject(AudioFeedbackService);
   private readonly habitosService = inject(HabitosService);
 
   readonly confettiPieces = Array.from({ length: 24 }, (_, index) => index);
@@ -25,12 +28,16 @@ export class CelebracionHabito {
   constructor() {
     if (!this.habito()) {
       this.router.navigateByUrl('/');
+      return;
+    }
+
+    if (isPlatformBrowser(this.platformId)) {
+      setTimeout(() => this.audioFeedback.playCelebration(), 120);
     }
   }
 
   finalizarTarea(): void {
-    // TODO(AFIM): reproducir un sonido de refuerzo positivo al completar la tarea.
-    // TODO(AFIM): retocar el final del premio (pantalla/flujo de cierre) antes de la entrega final.
+    this.audioFeedback.playClick();
     this.habitosService.completarHabito(this.habitoId);
     this.router.navigate(this.rutaVolver());
   }

@@ -1,6 +1,7 @@
 import { NgOptimizedImage } from '@angular/common';
 import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { AudioFeedbackService } from '../../../core/services/audio-feedback.service';
 import { HabitosService } from '../../../core/services/habitos.service';
 import { ProgresoBar } from '../../../shared/components/progreso-bar/progreso-bar';
 
@@ -14,6 +15,7 @@ import { ProgresoBar } from '../../../shared/components/progreso-bar/progreso-ba
 export class DetalleHabito {
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
+  private readonly audioFeedback = inject(AudioFeedbackService);
   private readonly habitosService = inject(HabitosService);
 
   private readonly habitoId = Number(this.route.snapshot.paramMap.get('id'));
@@ -43,6 +45,8 @@ export class DetalleHabito {
   }
 
   completarPaso(): void {
+    this.audioFeedback.playClick();
+
     if (this.pasoActual() < this.totalPasos() - 1) {
       this.pasoActual.update((pasoActual) => pasoActual + 1);
       return;
