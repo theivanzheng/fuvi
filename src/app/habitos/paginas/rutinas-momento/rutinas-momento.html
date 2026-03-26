@@ -1,0 +1,39 @@
+<main class="panel activo" aria-label="Panel de rutinas por momento del día">
+  <div class="topbar-rutinas">
+    <a class="btn-volver btn-back-momento" [routerLink]="['/']" aria-label="Volver a selección de momento">
+      <span class="flecha-back" aria-hidden="true">⟵</span>
+      <span>VOLVER</span>
+    </a>
+    <h1 class="titulo-rutinas">{{ tituloMomento() }}</h1>
+    <span class="topbar-espacio" aria-hidden="true"></span>
+  </div>
+
+  <app-cabecera-fuvi
+    [titulo]="tituloMomento()"
+    [avatar]="avatarPrincipal()"
+    [mostrarBotonConfiguracion]="true"
+    [mostrarTitulo]="false"
+  />
+
+  <p class="subtitulo-dia">{{ subtituloDia() }}</p>
+
+  <app-progreso-bar [completados]="totalCompletadosMomento()" [total]="totalHabitosMomento()" />
+
+  <section class="habitos-section" aria-label="Listado de rutinas">
+    <h2>HÁBITOS</h2>
+
+    @if (totalHabitosMomento() === 0) {
+      <p class="sin-rutinas">NO HAY RUTINAS PARA ESTE MOMENTO</p>
+    } @else {
+      <div class="habitos-lista">
+        @for (habito of habitosFiltrados(); track habito.id) {
+          <app-tarjeta-habito [habito]="habito" [routerLink]="['/habitos', habito.id]" />
+        }
+      </div>
+    }
+  </section>
+
+  @if (todoCompletado()) {
+    <button class="btn-reiniciar" (click)="reiniciarRutinas()">REINICIAR TAREAS</button>
+  }
+</main>

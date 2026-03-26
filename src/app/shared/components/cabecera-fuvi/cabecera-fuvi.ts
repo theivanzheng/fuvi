@@ -13,4 +13,5 @@ export class CabeceraFuvi {
   titulo = input.required<string>();
   avatar = input.required<string>();
   mostrarBotonConfiguracion = input<boolean>(false);
+  mostrarTitulo = input<boolean>(true);
 }

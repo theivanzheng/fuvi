@@ -1,3 +1,190 @@
 :host {
   display: block;
 }
+
+.panel.activo {
+  position: relative;
+  align-items: center;
+  gap: 22px;
+  overflow: hidden;
+}
+
+.btn-volver,
+.titulo-tarea,
+.celebracion-avatar-wrap,
+.nombre-tarea,
+app-progreso-bar,
+.botones-accion {
+  position: relative;
+  z-index: 1;
+}
+
+.titulo-tarea {
+  text-align: center;
+}
+
+.nombre-tarea {
+  text-align: center;
+  font-size: 2.1rem;
+}
+
+.celebracion-avatar-wrap {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 220px;
+  height: 220px;
+}
+
+.celebracion-avatar-wrap::before,
+.celebracion-avatar-wrap::after {
+  content: '';
+  position: absolute;
+  inset: 24px;
+  border-radius: 50%;
+  border: 4px dashed rgba(255, 191, 71, 0.75);
+  animation: haloPulse 1.8s ease-in-out infinite;
+}
+
+.celebracion-avatar-wrap::after {
+  inset: 8px;
+  border-style: solid;
+  border-color: rgba(255, 221, 87, 0.35);
+  animation-delay: 0.25s;
+}
+
+.personaje-circulo.celebracion {
+  position: relative;
+  z-index: 1;
+  width: 160px;
+  height: 160px;
+  background: linear-gradient(180deg, #fff9d6 0%, #ffffff 100%);
+  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.12);
+  animation: avatarJoySpin 1.25s ease-in-out, avatarFloat 2.4s ease-in-out infinite 1.25s;
+}
+
+.personaje-circulo.celebracion img {
+  width: 88%;
+  height: 88%;
+}
+
+.confetti-overlay {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.confetti-piece {
+  position: absolute;
+  top: -12%;
+  width: 14px;
+  height: 28px;
+  border-radius: 999px;
+  opacity: 0;
+  animation: confettiBurst 3s ease-out infinite;
+}
+
+.confetti-piece:nth-child(4n + 1) {
+  background: #ff6b6b;
+}
+
+.confetti-piece:nth-child(4n + 2) {
+  background: #ffd93d;
+}
+
+.confetti-piece:nth-child(4n + 3) {
+  background: #6bcB77;
+}
+
+.confetti-piece:nth-child(4n + 4) {
+  background: #4d96ff;
+}
+
+.confetti-piece:nth-child(1) { left: 5%; animation-delay: 0s; }
+.confetti-piece:nth-child(2) { left: 12%; animation-delay: 0.15s; }
+.confetti-piece:nth-child(3) { left: 18%; animation-delay: 0.3s; }
+.confetti-piece:nth-child(4) { left: 24%; animation-delay: 0.45s; }
+.confetti-piece:nth-child(5) { left: 30%; animation-delay: 0.6s; }
+.confetti-piece:nth-child(6) { left: 36%; animation-delay: 0.1s; }
+.confetti-piece:nth-child(7) { left: 42%; animation-delay: 0.75s; }
+.confetti-piece:nth-child(8) { left: 48%; animation-delay: 0.25s; }
+.confetti-piece:nth-child(9) { left: 54%; animation-delay: 0.9s; }
+.confetti-piece:nth-child(10) { left: 60%; animation-delay: 0.4s; }
+.confetti-piece:nth-child(11) { left: 66%; animation-delay: 1.05s; }
+.confetti-piece:nth-child(12) { left: 72%; animation-delay: 0.2s; }
+.confetti-piece:nth-child(13) { left: 78%; animation-delay: 1.2s; }
+.confetti-piece:nth-child(14) { left: 84%; animation-delay: 0.5s; }
+.confetti-piece:nth-child(15) { left: 90%; animation-delay: 1.35s; }
+.confetti-piece:nth-child(16) { left: 96%; animation-delay: 0.35s; }
+.confetti-piece:nth-child(17) { left: 8%; animation-delay: 1.1s; }
+.confetti-piece:nth-child(18) { left: 20%; animation-delay: 1.45s; }
+.confetti-piece:nth-child(19) { left: 33%; animation-delay: 0.85s; }
+.confetti-piece:nth-child(20) { left: 46%; animation-delay: 1.6s; }
+.confetti-piece:nth-child(21) { left: 58%; animation-delay: 1.25s; }
+.confetti-piece:nth-child(22) { left: 69%; animation-delay: 1.8s; }
+.confetti-piece:nth-child(23) { left: 81%; animation-delay: 1.5s; }
+.confetti-piece:nth-child(24) { left: 93%; animation-delay: 1.95s; }
+
+.botones-accion {
+  gap: 18px;
+}
+
+@keyframes avatarJoySpin {
+  0% {
+    transform: rotate(0deg) scale(0.88);
+  }
+  55% {
+    transform: rotate(200deg) scale(1.06);
+  }
+  100% {
+    transform: rotate(360deg) scale(1);
+  }
+}
+
+@keyframes avatarFloat {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+@keyframes confettiBurst {
+  0% {
+    transform: translate3d(0, 0, 0) rotate(0deg) scale(0.7);
+    opacity: 0;
+  }
+  10% {
+    opacity: 1;
+  }
+  100% {
+    transform: translate3d(-16px, 480px, 0) rotate(540deg) scale(1);
+    opacity: 0;
+  }
+}
+
+@keyframes haloPulse {
+  0%, 100% {
+    transform: scale(0.96);
+    opacity: 0.4;
+  }
+  50% {
+    transform: scale(1.03);
+    opacity: 0.85;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .personaje-circulo.celebracion,
+  .celebracion-avatar-wrap::before,
+  .celebracion-avatar-wrap::after,
+  .confetti-piece {
+    animation: none;
+  }
+
+  .confetti-piece {
+    opacity: 0.35;
+  }
+}
