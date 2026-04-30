@@ -40,12 +40,6 @@ La analogía más directa: si MongoDB es la base de datos y Node.js es el códig
 
 La conexión con nuestro cluster de Atlas tiene este formato, usando las credenciales del proyecto:
 
-```javascript
-const DB_USER = 'dbIvanZhengSPW'
-const DB_PASSWORD = 'Lavender1314'
-const DB_NAME = 'fuvi'
-const MONGO_URI_ATLAS = `mongodb+srv://${DB_USER}:${DB_PASSWORD}@spwivanzhengupsa.jy9zrb9.mongodb.net/${DB_NAME}`
-
 mongoose.connect(MONGO_URI_ATLAS)
   .then(() => console.log('Conectado a MongoDB Atlas'))
   .catch(err => console.error('Error de conexión:', err))
