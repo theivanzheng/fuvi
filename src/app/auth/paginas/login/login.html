@@ -1,0 +1,26 @@
+<main class="panel activo login-panel" aria-label="Pantalla de acceso">
+  <section class="login-bienvenida">
+    <p class="login-marca">FUVI</p>
+    <h1>¿CÓMO TE LLAMAS?</h1>
+  </section>
+
+  <form class="login-form" (submit)="entrar(); $event.preventDefault()">
+    <input
+      id="nombre"
+      class="login-input"
+      type="text"
+      [value]="nombre()"
+      (input)="actualizarNombre($event)"
+      placeholder="ESCRIBE TU NOMBRE"
+      autocomplete="name"
+    />
+
+    @if (mensajeError()) {
+      <p class="login-error" role="alert">{{ mensajeError() }}</p>
+    }
+
+    <button class="login-btn" type="submit" [disabled]="cargando()">
+      {{ cargando() ? 'ENTRANDO...' : 'PULSAR' }}
+    </button>
+  </form>
+</main>

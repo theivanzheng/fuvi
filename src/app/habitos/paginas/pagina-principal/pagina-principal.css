@@ -2,6 +2,28 @@
   display: block;
 }
 
+.acciones-inicio {
+  display: flex;
+  justify-content: center;
+  margin-top: auto;
+  padding-top: 14px;
+}
+
+.btn-cerrar-sesion {
+  padding: 0;
+  border: none;
+  background: transparent;
+  color: #b6b6b6;
+  font-size: 0.95rem;
+  font-weight: 800;
+  letter-spacing: 0.08rem;
+  text-transform: uppercase;
+}
+
+.btn-cerrar-sesion:hover {
+  color: #9c9c9c;
+}
+
 .momentos-section {
   width: 100%;
   display: grid;

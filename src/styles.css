@@ -41,7 +41,7 @@ a:focus-visible {
 .panel {
   display: none;
   width: 768px;
-  min-height: 900px;
+  height: 900px;
   max-width: 98vw;
   max-height: 98vh;
   background: var(--panel-bg);
@@ -400,7 +400,7 @@ h2 {
     border-width: 16px;
     border-radius: 24px;
     padding: 16px;
-    min-height: 0;
+    height: auto;
   }
 
   h1 {

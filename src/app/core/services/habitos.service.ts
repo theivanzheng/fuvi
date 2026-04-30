@@ -1,19 +1,46 @@
-import { isPlatformBrowser } from '@angular/common';
-import { computed, effect, inject, Injectable, PLATFORM_ID, signal } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { computed, effect, inject, Injectable, signal } from '@angular/core';
+import { firstValueFrom } from 'rxjs';
 import { AvatarType, Habito, MomentoDia, TipoDia } from '../models/habito.model';
+import { environment } from '../../../environments/environment';
+import { AuthService } from './auth.service';
 
-const STORAGE_HABITOS = 'fuvi_habitos_v3';
-const STORAGE_AVATAR = 'fuvi_avatar_v1';
+interface ApiResponse<T> {
+  data: T;
+  message: string;
+}
+
+interface PasoRutinaBackend {
+  texto: string;
+  imagen: string;
+}
+
+interface RutinaBackend {
+  _id: string;
+  nombreRutina: string;
+  imagenPortada: string;
+  color: string;
+  momento: MomentoDia;
+  tipoDia: TipoDia;
+  pasos: PasoRutinaBackend[];
+}
+
+interface RutinaUsuarioBackend {
+  rutina: RutinaBackend;
+  completada: boolean;
+}
 
 @Injectable({
   providedIn: 'root',
 })
 export class HabitosService {
-  private readonly platformId = inject(PLATFORM_ID);
-  private readonly esNavegador = isPlatformBrowser(this.platformId);
+  private readonly http = inject(HttpClient);
+  private readonly authService = inject(AuthService);
+  private ultimoUsuarioCargado: string | null = null;
 
-  habitos = signal<Habito[]>(this.cargarHabitos());
-  avatarSeleccionado = signal<AvatarType>(this.cargarAvatar());
+  habitos = signal<Habito[]>([]);
+  avatarSeleccionado = signal<AvatarType>('female');
+  rutinasCargadas = signal(false);
 
   totalHabitos = computed(() => this.habitos().length);
   totalCompletados = computed(() => this.habitos().filter((habito) => habito.completado).length);
@@ -38,23 +65,29 @@ export class HabitosService {
       : '/assets/images/character-female-celebration.png';
   });
 
-  guardarHabitos = effect(() => {
-    if (!this.esNavegador) {
+  sincronizarUsuario = effect(() => {
+    const usuario = this.authService.usuarioActual();
+
+    if (!usuario) {
+      this.ultimoUsuarioCargado = null;
+      this.avatarSeleccionado.set('female');
+      this.habitos.set([]);
+      this.rutinasCargadas.set(false);
       return;
     }
 
-    localStorage.setItem(STORAGE_HABITOS, JSON.stringify(this.habitos()));
-  });
+    this.avatarSeleccionado.set(usuario.avatar);
 
-  guardarAvatar = effect(() => {
-    if (!this.esNavegador) {
+    if (this.ultimoUsuarioCargado === usuario._id) {
       return;
     }
 
-    localStorage.setItem(STORAGE_AVATAR, this.avatarSeleccionado());
+    this.ultimoUsuarioCargado = usuario._id;
+    this.rutinasCargadas.set(false);
+    void this.cargarRutinasUsuario();
   });
 
-  getHabitoPorId(id: number): Habito | undefined {
+  getHabitoPorId(id: string): Habito | undefined {
     return this.habitos().find((habito) => habito.id === id);
   }
 
@@ -70,196 +103,86 @@ export class HabitosService {
     return dia === 0 || dia === 6;
   }
 
-  getMomentoHabito(id: number): MomentoDia {
+  getMomentoHabito(id: string): MomentoDia {
     return this.getHabitoPorId(id)?.momento ?? 'manana';
   }
 
-  completarHabito(id: number): void {
+  completarHabito(id: string): void {
     this.habitos.update((listaActual) =>
       listaActual.map((habito) => (habito.id === id ? { ...habito, completado: true } : habito)),
     );
+
+    const usuario = this.authService.getUsuarioActual();
+    if (!usuario) {
+      return;
+    }
+
+    void firstValueFrom(
+      this.http.patch(`${environment.apiUrl}/usuarios/${usuario._id}/rutinas/${id}/completar`, {}, { withCredentials: true }),
+    ).catch(() => undefined);
   }
 
   reiniciarHabitos(): void {
-    this.habitos.set(this.getHabitosIniciales());
+    this.habitos.update((listaActual) => listaActual.map((habito) => ({ ...habito, completado: false })));
+
+    const usuario = this.authService.getUsuarioActual();
+    if (!usuario) {
+      return;
+    }
+
+    void firstValueFrom(
+      this.http.post(`${environment.apiUrl}/usuarios/${usuario._id}/rutinas/reiniciar`, {}, { withCredentials: true }),
+    ).catch(() => undefined);
   }
 
   cambiarAvatar(avatar: AvatarType): void {
     this.avatarSeleccionado.set(avatar);
+    void this.authService.actualizarAvatar(avatar);
   }
 
-  private cargarHabitos(): Habito[] {
-    if (!this.esNavegador) {
-      return this.getHabitosIniciales();
-    }
-
-    const habitosGuardados = localStorage.getItem(STORAGE_HABITOS);
-
-    if (!habitosGuardados) {
-      return this.getHabitosIniciales();
+  async cargarRutinasUsuario(): Promise<void> {
+    const usuario = this.authService.getUsuarioActual();
+    if (!usuario) {
+      return;
     }
 
     try {
-      const habitosParseados = JSON.parse(habitosGuardados) as Habito[];
-      return this.combinarConEstadoGuardado(habitosParseados);
+      const response = await firstValueFrom(
+        this.http.get<ApiResponse<RutinaUsuarioBackend[]>>(`${environment.apiUrl}/usuarios/${usuario._id}/rutinas`, {
+          withCredentials: true,
+        }),
+      );
+
+      if (!response.data?.length) {
+        this.habitos.set([]);
+        this.rutinasCargadas.set(true);
+        return;
+      }
+
+      this.habitos.set(response.data.map((rutina) => this.mapearRutinaDesdeBackend(rutina)));
+      this.rutinasCargadas.set(true);
     } catch {
-      return this.getHabitosIniciales();
+      this.habitos.set([]);
+      this.rutinasCargadas.set(true);
     }
   }
 
-  private combinarConEstadoGuardado(habitosGuardados: Habito[]): Habito[] {
-    const estadoCompletado = new Map(habitosGuardados.map((habito) => [habito.id, habito.completado]));
-    return this.getHabitosIniciales().map((habitoBase) => ({
-      ...habitoBase,
-      completado: estadoCompletado.get(habitoBase.id) ?? false,
-    }));
+  private mapearRutinaDesdeBackend(rutinaUsuario: RutinaUsuarioBackend): Habito {
+    const rutina = rutinaUsuario.rutina;
+
+    return {
+      id: rutina._id,
+      nombre: rutina.nombreRutina,
+      imagenPortada: rutina.imagenPortada,
+      color: rutina.color,
+      completado: rutinaUsuario.completada,
+      momento: rutina.momento,
+      tipoDia: rutina.tipoDia,
+      pasos: rutina.pasos.map((paso) => ({
+        texto: paso.texto,
+        imagen: paso.imagen,
+      })),
+    };
   }
 
-  private cargarAvatar(): AvatarType {
-    if (!this.esNavegador) {
-      return 'female';
-    }
-
-    const avatar = localStorage.getItem(STORAGE_AVATAR);
-    return avatar === 'male' ? 'male' : 'female';
-  }
-
-  private getHabitosIniciales(): Habito[] {
-    return [
-      {
-        id: 0,
-        nombre: 'Lavar las manos',
-        imagenPortada: '/assets/images/lavar-manos-cover.png',
-        color: '#f0f0f0',
-        completado: false,
-        momento: 'manana',
-        tipoDia: 'ambos',
-        pasos: [
-          { texto: 'Abrir el grifo', imagen: '/assets/images/abrir-grifo.png' },
-          { texto: 'Mojar las manos', imagen: '/assets/images/lavar-manos-cover.png' },
-          { texto: 'Frotar con jabon', imagen: '/assets/images/echar-jabon.png' },
-          { texto: 'Cerrar el grifo', imagen: '/assets/images/cerrar-grifo.png' },
-          { texto: 'Secar las manos', imagen: '/assets/images/secar-manos.png' },
-        ],
-      },
-      {
-        id: 1,
-        nombre: 'Hacer la cama',
-        imagenPortada: '/assets/images/hacer-cama-cover.png',
-        color: '#ffb3b3',
-        completado: false,
-        momento: 'manana',
-        tipoDia: 'semana',
-        pasos: [
-          { texto: 'Estirar la sabana', imagen: '/assets/images/estirar-sabana.png' },
-          { texto: 'Colocar la almohada', imagen: '/assets/images/colocar-almohada.png' },
-          { texto: 'Dejar la cama ordenada', imagen: '/assets/images/cama-ordenada.png' },
-        ],
-      },
-      {
-        id: 2,
-        nombre: 'Poner lavadora',
-        imagenPortada: '/assets/images/poner-ropa-lavadora.png',
-        color: '#ffc0cb',
-        completado: false,
-        momento: 'mediodia',
-        tipoDia: 'finde',
-        pasos: [
-          { texto: 'Llevar la ropa sucia', imagen: '/assets/images/llevar-ropa-sucia.png' },
-          { texto: 'Meter la ropa en la lavadora', imagen: '/assets/images/poner-ropa-lavadora.png' },
-          { texto: 'Poner detergente', imagen: '/assets/images/poner-detergente.png' },
-          { texto: 'Seleccionar programa', imagen: '/assets/images/seleccion-programa.png' },
-        ],
-      },
-      {
-        id: 3,
-        nombre: 'Recoger platos',
-        imagenPortada: '/assets/images/recoger-platos.png',
-        color: '#b3e5fc',
-        completado: false,
-        momento: 'noche',
-        tipoDia: 'ambos',
-        pasos: [
-          { texto: 'Recoger los platos de la mesa', imagen: '/assets/images/recoger-mesa.png' },
-          { texto: 'Llevarlos al fregadero', imagen: '/assets/images/llevar-fregadero.png' },
-          { texto: 'Enjuagar los platos', imagen: '/assets/images/enjuagar-platos-user.png' },
-          { texto: 'Colocar en el lavavajillas', imagen: '/assets/images/poner-lavavajillas-user.png' },
-        ],
-      },
-      {
-        id: 4,
-        nombre: 'Ordenar la habitacion',
-        imagenPortada: '/assets/images/habitacion.png',
-        color: '#ffe7b3',
-        completado: false,
-        momento: 'manana',
-        tipoDia: 'ambos',
-        pasos: [
-          { texto: 'Recojo la ropa', imagen: '/assets/images/guardar-ropa.png' },
-          { texto: 'Hago la cama', imagen: '/assets/images/estirar-sabana.png' },
-          { texto: 'Guardo los juguetes', imagen: '/assets/images/recoger-juguetes.png' },
-          { texto: 'Recojo el escritorio', imagen: '/assets/images/escritorio.png' },
-          { texto: 'Tiro los papeles', imagen: '/assets/images/tirar-papelera.png' },
-        ],
-      },
-      {
-        id: 5,
-        nombre: 'Preparar la mesa',
-        imagenPortada: '/assets/images/poner-mesa.png',
-        color: '#ffd8be',
-        completado: false,
-        momento: 'mediodia',
-        tipoDia: 'semana',
-        pasos: [
-          { texto: 'Llevar platos a la mesa', imagen: '/assets/images/comer.png' },
-          { texto: 'Colocar vasos y cubiertos', imagen: '/assets/images/poner-mesa.png' },
-          { texto: 'Comprobar que esta todo listo', imagen: '/assets/images/comer.png' },
-        ],
-      },
-      {
-        id: 6,
-        nombre: 'Enjuagar platos',
-        imagenPortada: '/assets/images/enjuagar-platos.png',
-        color: '#cdeffd',
-        completado: false,
-        momento: 'mediodia',
-        tipoDia: 'ambos',
-        pasos: [
-          { texto: 'Llevar platos al fregadero', imagen: '/assets/images/llevar-fregadero.png' },
-          { texto: 'Abrir agua y enjuagar', imagen: '/assets/images/enjuagar-platos.png' },
-          { texto: 'Dejar platos limpios', imagen: '/assets/images/enjuagar-platos-user.png' },
-        ],
-      },
-      {
-        id: 7,
-        nombre: 'Higiene antes de dormir',
-        imagenPortada: '/assets/images/pasta-dientes.png',
-        color: '#e2d8ff',
-        completado: false,
-        momento: 'noche',
-        tipoDia: 'ambos',
-        pasos: [
-          { texto: 'Cepillarse los dientes', imagen: '/assets/images/pasta-dientes.png' },
-          { texto: 'Lavar manos y cara', imagen: '/assets/images/lavar-cara.png' },
-          { texto: 'Secar con toalla', imagen: '/assets/images/secar-cara.png' },
-          { texto: 'Prepararse para dormir', imagen: '/assets/images/Dormir.png' },
-        ],
-      },
-      {
-        id: 8,
-        nombre: 'Colada del fin de semana',
-        imagenPortada: '/assets/images/poner-ropa-lavadora.png',
-        color: '#ffd6e7',
-        completado: false,
-        momento: 'mediodia',
-        tipoDia: 'finde',
-        pasos: [
-          { texto: 'Separar la ropa sucia', imagen: '/assets/images/llevar-ropa-sucia.png' },
-          { texto: 'Poner ropa en la lavadora', imagen: '/assets/images/poner-ropa-lavadora.png' },
-          { texto: 'Anadir detergente', imagen: '/assets/images/poner-detergente.png' },
-          { texto: 'Elegir programa de lavado', imagen: '/assets/images/seleccion-programa.png' },
-        ],
-      },
-    ];
-  }
 }

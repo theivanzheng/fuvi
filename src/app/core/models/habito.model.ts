@@ -7,7 +7,7 @@ export type MomentoDia = 'manana' | 'mediodia' | 'noche';
 export type TipoDia = 'semana' | 'finde' | 'ambos';
 
 export interface Habito {
-  id: number;
+  id: string;
   nombre: string;
   imagenPortada: string;
   color: string;

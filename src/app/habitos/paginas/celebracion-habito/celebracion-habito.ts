@@ -1,5 +1,5 @@
 import { NgOptimizedImage, isPlatformBrowser } from '@angular/common';
-import { ChangeDetectionStrategy, Component, computed, inject, PLATFORM_ID } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, effect, inject, PLATFORM_ID } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { AudioFeedbackService } from '../../../core/services/audio-feedback.service';
 import { HabitosService } from '../../../core/services/habitos.service';
@@ -20,25 +20,29 @@ export class CelebracionHabito {
   private readonly habitosService = inject(HabitosService);
 
   readonly confettiPieces = Array.from({ length: 24 }, (_, index) => index);
-  private readonly habitoId = Number(this.route.snapshot.paramMap.get('id'));
+  private readonly habitoId = this.route.snapshot.paramMap.get('id') ?? '';
   habito = computed(() => this.habitosService.getHabitoPorId(this.habitoId));
   rutaVolver = computed(() => ['/rutinas', this.habitosService.getMomentoHabito(this.habitoId)] as const);
+  rutinasCargadas = this.habitosService.rutinasCargadas;
   avatarCelebracion = this.habitosService.avatarCelebracion;
+  private celebracionReproducida = false;
 
   constructor() {
-    if (!this.habito()) {
-      this.router.navigateByUrl('/');
-      return;
-    }
+    effect(() => {
+      if (this.rutinasCargadas() && !this.habito()) {
+        void this.router.navigateByUrl('/inicio');
+      }
 
-    if (isPlatformBrowser(this.platformId)) {
-      setTimeout(() => this.audioFeedback.playCelebration(), 120);
-    }
+      if (!this.celebracionReproducida && this.habito() && isPlatformBrowser(this.platformId)) {
+        this.celebracionReproducida = true;
+        setTimeout(() => this.audioFeedback.playCelebration(), 120);
+      }
+    });
   }
 
   finalizarTarea(): void {
     this.audioFeedback.playClick();
     this.habitosService.completarHabito(this.habitoId);
-    this.router.navigate(this.rutaVolver());
+    void this.router.navigate(this.rutaVolver());
   }
 }
