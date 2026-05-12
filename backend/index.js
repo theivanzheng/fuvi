@@ -25,6 +25,6 @@ app.use(function (req, res) {
     res.sendFile(path.join(distPath, 'index.html'));
 });
 
-app.listen(config.port, () => {
+app.listen(config.port, '0.0.0.0', () => {
     console.log(`servidor escuchando en ${config.port}`);
 })
