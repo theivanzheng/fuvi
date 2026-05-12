@@ -7,6 +7,11 @@ class UsuariosService {
         this.mongoDB = new MongoLib();
     }
 
+    async getUsuarios() {
+        const usuarios = await this.mongoDB.getAll(this.collection);
+        return usuarios || [];
+    }
+
     async login({ nombre }) {
         const nombreEscapado = nombre.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
         const usuario = await this.mongoDB.getOne(this.collection, {

@@ -42,3 +42,8 @@ __screenshots__/
 # System files
 .DS_Store
 Thumbs.db
+
+#Readme's
+/README_NUEVA_IDEA.md
+/ideaProyecto.md
+/resumenProyecto1.md

@@ -1,6 +1,15 @@
-import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 import { Router } from '@angular/router';
-import { AuthService } from '../../../core/services/auth.service';
+import { AuthService, Usuario } from '../../../core/services/auth.service';
+
+const PLACEHOLDERS: Usuario[] = [
+  { _id: 'p1', nombre: '- - -', avatar: 'female', color: '#FFDDE1' },
+  { _id: 'p2', nombre: '- - -', avatar: 'male',   color: '#D1E8FF' },
+  { _id: 'p3', nombre: '- - -', avatar: 'female', color: '#FFE8D1' },
+  { _id: 'p4', nombre: '- - -', avatar: 'male',   color: '#D1FFE8' },
+  { _id: 'p5', nombre: '- - -', avatar: 'female', color: '#FFF5D1' },
+  { _id: 'p6', nombre: '- - -', avatar: 'male',   color: '#E8D1FF' },
+];
 
 @Component({
   selector: 'app-login',
@@ -13,46 +22,55 @@ export class Login {
   private readonly router = inject(Router);
   private readonly authService = inject(AuthService);
 
-  nombre = signal('');
-  cargando = signal(false);
+  usuarios = signal<Usuario[]>([]);
+  cargando = signal(true);
+  seleccionando = signal(false);
   mensajeError = signal('');
 
+  hayUsuarios = computed(() => this.usuarios().length > 0);
+  usuariosAMostrar = computed(() => this.hayUsuarios() ? this.usuarios() : PLACEHOLDERS);
+
   constructor() {
-    void this.redirigirSiSesionActiva();
+    void this.inicializar();
   }
 
-  private async redirigirSiSesionActiva(): Promise<void> {
-    const usuario = this.authService.estaLogueado()
-      ? this.authService.getUsuarioActual()
-      : await this.authService.cargarSesion();
+  private async inicializar(): Promise<void> {
+    try {
+      if (this.authService.estaLogueado()) {
+        void this.router.navigateByUrl('/inicio');
+        return;
+      }
 
-    if (usuario) {
-      void this.router.navigateByUrl('/inicio');
+      const lista = await this.authService.getUsuarios();
+      this.usuarios.set(lista);
+
+      if (lista.length === 0) {
+        this.mensajeError.set('NO SE PUDO CONECTAR AL SERVIDOR');
+      }
+    } catch {
+      this.mensajeError.set('ERROR AL CARGAR USUARIOS');
+    } finally {
+      this.cargando.set(false);
     }
   }
 
-  actualizarNombre(event: Event): void {
-    const input = event.target as HTMLInputElement;
-    this.nombre.set(input.value);
-    this.mensajeError.set('');
+  imagenAvatar(avatar: 'female' | 'male'): string {
+    return avatar === 'male'
+      ? '/assets/images/character-male.png'
+      : '/assets/images/character-female.png';
   }
 
-  async entrar(): Promise<void> {
-    const nombre = this.nombre().trim();
+  async seleccionarUsuario(usuario: Usuario): Promise<void> {
+    if (this.seleccionando() || !this.hayUsuarios()) return;
 
-    if (!nombre) {
-      this.mensajeError.set('ESCRIBE TU NOMBRE PARA ENTRAR');
-      return;
-    }
-
-    this.cargando.set(true);
+    this.seleccionando.set(true);
     this.mensajeError.set('');
 
-    const usuario = await this.authService.login(nombre);
-    this.cargando.set(false);
+    const resultado = await this.authService.login(usuario.nombre);
+    this.seleccionando.set(false);
 
-    if (!usuario) {
-      this.mensajeError.set('NO HEMOS ENCONTRADO ESE USUARIO');
+    if (!resultado) {
+      this.mensajeError.set('NO SE PUDO INICIAR SESIÓN');
       return;
     }
 

@@ -13,6 +13,7 @@ export interface Usuario {
   _id: string;
   nombre: string;
   avatar: AvatarType;
+  color: string;
 }
 
 @Injectable({
@@ -129,11 +130,23 @@ export class AuthService {
     }
   }
 
+  async getUsuarios(): Promise<Usuario[]> {
+    try {
+      const response = await firstValueFrom(
+        this.http.get<ApiResponse<Usuario[]>>(`${environment.apiUrl}/usuarios`, { withCredentials: true }),
+      );
+      return response.data ?? [];
+    } catch {
+      return [];
+    }
+  }
+
   private normalizarUsuario(usuario: Usuario): Usuario {
     return {
       _id: usuario._id,
       nombre: usuario.nombre,
       avatar: usuario.avatar === 'male' ? 'male' : 'female',
+      color: usuario.color ?? '#FFDDE1',
     };
   }
 }

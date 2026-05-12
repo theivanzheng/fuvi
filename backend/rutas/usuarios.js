@@ -26,9 +26,21 @@ function borrarCookieSesion() {
 
 function usuariosAPI(app) {
     const router = express.Router();
-    app.use('/api/usuarios', router);
-
     const usuariosService = new UsuariosService();
+
+    app.get('/api/usuarios', async function (req, res, next) {
+        try {
+            const usuarios = await usuariosService.getUsuarios();
+            res.status(200).json({
+                data: usuarios,
+                message: 'usuarios recuperados con éxito'
+            });
+        } catch (err) {
+            next(err);
+        }
+    });
+
+    app.use('/api/usuarios', router);
 
     app.post('/api/login', async function (req, res, next) {
         const { body: { nombre } } = req;
