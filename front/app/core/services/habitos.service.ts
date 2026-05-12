@@ -135,6 +135,19 @@ export class HabitosService {
     ).catch(() => undefined);
   }
 
+  async enviarValoracion(rutinaId: string, estrellas: number): Promise<void> {
+    const usuario = this.authService.getUsuarioActual();
+    if (!usuario) return;
+
+    await firstValueFrom(
+      this.http.post(
+        `${environment.apiUrl}/valoraciones`,
+        { usuarioId: usuario._id, rutinaId, estrellas },
+        { withCredentials: true },
+      ),
+    ).catch(() => undefined);
+  }
+
   cambiarAvatar(avatar: AvatarType): void {
     this.avatarSeleccionado.set(avatar);
     void this.authService.actualizarAvatar(avatar);

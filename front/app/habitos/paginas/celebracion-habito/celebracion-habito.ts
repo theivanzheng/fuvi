@@ -43,6 +43,6 @@ export class CelebracionHabito {
   finalizarTarea(): void {
     this.audioFeedback.playClick();
     this.habitosService.completarHabito(this.habitoId);
-    void this.router.navigate(this.rutaVolver());
+    void this.router.navigateByUrl(`/habitos/${this.habitoId}/valorar`);
   }
 }

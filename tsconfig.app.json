@@ -4,12 +4,13 @@
   "extends": "./tsconfig.json",
   "compilerOptions": {
     "outDir": "./out-tsc/app",
+    "rootDir": "./front",
     "types": []
   },
   "include": [
-    "src/**/*.ts"
+    "front/**/*.ts"
   ],
   "exclude": [
-    "src/**/*.spec.ts"
+    "front/**/*.spec.ts"
   ]
 }

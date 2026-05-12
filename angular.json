@@ -11,18 +11,18 @@
       "projectType": "application",
       "schematics": {},
       "root": "",
-      "sourceRoot": "src",
+      "sourceRoot": "front",
       "prefix": "app",
       "architect": {
         "build": {
           "builder": "@angular/build:application",
           "options": {
-            "browser": "src/main.ts",
+            "browser": "front/main.ts",
             "tsConfig": "tsconfig.app.json",
             "assets": [
               {
                 "glob": "**/*",
-                "input": "src/assets",
+                "input": "front/assets",
                 "output": "/assets"
               },
               {
@@ -31,11 +31,17 @@
               }
             ],
             "styles": [
-              "src/styles.css"
+              "front/styles.css"
             ]
           },
           "configurations": {
             "production": {
+              "fileReplacements": [
+                {
+                  "replace": "front/environments/environment.ts",
+                  "with": "front/environments/environment.production.ts"
+                }
+              ],
               "budgets": [
                 {
                   "type": "initial",

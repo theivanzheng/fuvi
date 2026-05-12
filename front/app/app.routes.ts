@@ -5,6 +5,7 @@ import { PaginaPrincipal } from './habitos/paginas/pagina-principal/pagina-princ
 import { RutinasMomento } from './habitos/paginas/rutinas-momento/rutinas-momento';
 import { DetalleHabito } from './habitos/paginas/detalle-habito/detalle-habito';
 import { CelebracionHabito } from './habitos/paginas/celebracion-habito/celebracion-habito';
+import { ValoracionHabito } from './habitos/paginas/valoracion-habito/valoracion-habito';
 import { ConfiguracionAvatar } from './configuracion/paginas/configuracion-avatar/configuracion-avatar';
 
 export const routes: Routes = [
@@ -14,6 +15,7 @@ export const routes: Routes = [
   { path: 'rutinas/:momento', component: RutinasMomento, canActivate: [authGuard] },
   { path: 'habitos/:id', component: DetalleHabito, canActivate: [authGuard] },
   { path: 'habitos/:id/completado', component: CelebracionHabito, canActivate: [authGuard] },
+  { path: 'habitos/:id/valorar', component: ValoracionHabito, canActivate: [authGuard] },
   { path: 'configuracion/avatar', component: ConfiguracionAvatar, canActivate: [authGuard] },
   { path: '**', redirectTo: 'login' },
 ];

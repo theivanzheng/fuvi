@@ -152,6 +152,17 @@ class MongoLib {
             )
         }).then(result => result.modifiedCount || 0);
     }
+
+    insertarValoracion(usuarioId, rutinaId, estrellas) {
+        return this.connect().then(db => {
+            return db.collection('valoraciones').insertOne({
+                usuarioId: new ObjectId(usuarioId),
+                rutinaId: new ObjectId(rutinaId),
+                estrellas,
+                fecha: new Date()
+            });
+        }).then(result => result.insertedId);
+    }
 }
 
 module.exports = MongoLib;

@@ -1,0 +1,25 @@
+<main class="panel activo valoracion-panel" aria-label="Panel de valoración">
+  <h1 class="valoracion-titulo">¿CUÁNTO TE HA<br>GUSTADO?</h1>
+
+  <div class="estrellas" role="group" aria-label="Valoración de 1 a 5 estrellas">
+    @for (n of estrellas; track n) {
+      <button
+        class="estrella"
+        [class.activa]="n <= (estrellasHover() || estrellasSeleccionadas())"
+        (mouseenter)="estrellasHover.set(n)"
+        (mouseleave)="estrellasHover.set(0)"
+        (click)="seleccionarEstrella(n)"
+        [attr.aria-label]="n + ' estrella' + (n > 1 ? 's' : '')"
+      >★</button>
+    }
+  </div>
+
+  <div class="valoracion-botones">
+    <button class="btn-valoracion btn-enviar" (click)="enviar()" [disabled]="enviando()">
+      ENVIAR
+    </button>
+    <button class="btn-valoracion btn-saltar" (click)="saltar()" [disabled]="enviando()">
+      SALTAR
+    </button>
+  </div>
+</main>
